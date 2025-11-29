@@ -1,0 +1,8 @@
+### REGISTER A USER
+POST http://localhost:5003/auth/register
+Content-Type: application/json
+
+{
+    "username": "essa@gmail.com",
+    "password": "123123123"
+}
