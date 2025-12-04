@@ -9,6 +9,18 @@ router.post('/register', async (req, res) => {
     const {username, password} = req.body
     const hashedPassword = bcrypt.hashSync(password, 8)
 
+    
+    if (username.length < 2 || username.length > 16) return res.status(400).json({message: "Username length invalid"})
+    if (password.length < 8) return res.status(400).json({message: "Password must length of 8 characters or more"})
+
+    const userExists = await prisma.user.findUnique({
+        where: {
+            username
+        }
+    })
+
+    if (userExists) return res.status(400).json({message: "Username is already taken"})
+
     try {
         const user = await prisma.user.create({
             data: {
@@ -19,7 +31,6 @@ router.post('/register', async (req, res) => {
 
         const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, {expiresIn: '24h'})
         res.json({ token })
-        console.log(res.statusCode)
 
     } catch (err) {
         console.log(err.message)
@@ -28,3 +39,4 @@ router.post('/register', async (req, res) => {
 })
 
 export default router
+

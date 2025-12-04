@@ -19,6 +19,7 @@ function App() {
   const [datetime, setDatetime] = useState(null)
   const [history, setHistory] = useState({})
   const [attempts, setAttempts] = useState(0)
+  const [error, setError] = useState("")
 
   function handleChangePage(pageIndex){
     setSelectedPage(pageIndex)
@@ -30,78 +31,148 @@ function App() {
     handleChangePage(1)
   }
 
-  function handleCompleteDay() {
+  const handleCompleteDay = async () => {
     const newDay = day + 1
     const newDatetime = Date.now()
     setDay(newDay)
     setDatetime(newDatetime)
 
-    localStorage.setItem('day', JSON.stringify({
-      day: newDay,
-      datetime: newDatetime
-    }))
+    const response = await fetch("http://localhost:5003/progress/day", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": localStorage.getItem("token")
+      },
+      body: JSON.stringify({ day: newDay, datetime: newDatetime })
+    })
     setSelectedPage(1)
   }
 
-  function handleIncrementAttempts() {
-    const newRecord = attempts + 1
-    localStorage.setItem('attempts', newRecord)
-    setAttempts(newRecord)
+  const handleIncrementAttempts = async () => {
+    const newRecord = attempts + 1;
+    setAttempts(newRecord);
+    localStorage.setItem('attempts', newRecord);
+  
+    const token = localStorage.getItem("token");
+    
+    try {
+      await fetch("http://localhost:5003/attempts/rec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": token,
+        },
+        body: JSON.stringify({ attempts: newRecord }),
+      });
+    } catch (err) {
+      console.error("Failed to update attempts:", err);
+    }
   }
-
+  
   const daysWords = PLAN[day].map((idx) => {
     return getWordByIndex(WORDS, idx).word
   })
 
   useEffect(() => {
-    // this callback is triggered on pageload due to [] in second arg
-    if (!localStorage) { return } // if no exit to db, then exit callback function
-
-    if (localStorage.getItem('username')) {
-      // if we find something, then enter if block
-      setName(localStorage.getItem('username'))
-      // skip to dashboard
-      setSelectedPage(1)
-    }
-
-    if (localStorage.getItem('day')) {
-    // if we find something, then enter if block
-      const {day: d, datetime: dt } = JSON.parse(localStorage.getItem('day'))
-      setDay(d)
-      setDatetime(dt)
-
-      if (d > 1 && dt){
-        const diff = countdownIn24Hours(dt)
-
-        if (diff < 0){
-          let newHistory = {...history}
-          const timestamp = new Date(dt)
-          console.log(timestamp)
-          const formattedTimestamp = timestamp.toString().split(' ')
-          .slice(1, 4).join(' ')
-
-          newHistory[formattedTimestamp] = d
-          setHistory(newHistory)
-          setDay(1)
-          setAttempts(1)
-
-          localStorage.setItem('attempts', 0)
-          localStorage.setItem('history', JSON.stringify(newHistory))
-          localStorage.setItem('day', JSON.stringify({day: 1, datetime: null}))
+    const token = localStorage.getItem("token");
+    if (!token) return;
+  
+    const fetchData = async () => {
+      try {
+        // 1. Get username
+        const userRes = await fetch("http://localhost:5003/personal/name", {
+          headers: { "Authorization": token },
+        });
+        if (userRes.ok) {
+          const user = await userRes.json();
+          setName(user.username);
+          setSelectedPage(1);
         }
+  
+        // 2. Get attempts
+        let attemptsRes = await fetch("http://localhost:5003/attempts/rec", {
+          headers: { "Authorization": token },
+        });
+        
+        let attemptsData = { attemptNo: 0 };
+        
+        if (attemptsRes.ok) {
+          const data = await attemptsRes.json();
+          attemptsData = data?.attemptNo !== undefined ? data : { attemptNo: 0 };
+        }
+        setAttempts(attemptsData.attemptNo);
+        
+        
+  
+        // 4. Get progress (day/datetime)
+        let progressRes = await fetch("http://localhost:5003/progress/day", {
+          headers: { "Authorization": token },
+        });
+        let progressData = { day: 1, datetime: null };
+        if (progressRes.ok) {
+          const data = await progressRes.json();
+          progressData = data.day !== undefined ? data : progressData;
+        }
+        setDay(progressData.day);
+        setDatetime(Number(progressData.datetime));
+        console.log(progressData.datetime);
+        
+
+        
+  
+        // 5. Countdown logic
+        if (progressData.day > 1 && progressData.datetime) {
+          const diff = countdownIn24Hours(Number(progressData.datetime) * -1 );
+          if (diff < 0) {
+            console.log("Failed challenge");
+            let newHistory = { ...(history || {}) };
+            const timestamp = new Date(Number(progressData.datetime));
+            const formattedTimestamp = timestamp.toString().split(" ").slice(1, 4).join(" ");
+            newHistory[formattedTimestamp] = progressData.day;
+  
+            setHistory(newHistory);
+            console.log(newHistory)
+            setDay(1);
+            setDatetime(null);
+            setAttempts(0);
+  
+            // update backend
+            await fetch("http://localhost:5003/progress/day", {
+              method: "POST",
+              headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ day: 1, datetime: null }),
+            });
+  
+            await fetch("http://localhost:5003/history/rec", {
+              method: "POST",
+              headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ historyRec: newHistory }),
+            });
+  
+            await fetch("http://localhost:5003/attempts/rec", {
+              method: "POST",
+              headers: {
+                "Authorization": token,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ attempts: 0 }),
+            });
+          }
+        }
+      } catch (err) {
+        console.error(err);
       }
-    }
-
-    if (localStorage.getItem('attempts')) {
-    // if we find something, then enter if block
-      setAttempts(parseInt(localStorage.getItem('attempts')))
-
-    if (localStorage.getItem('history')) {
-    // if we find something, then enter if block
-      setHistory(JSON.parse(localStorage.getItem('history')))}
-
-    }
-  }, [])
+    };
+  
+    fetchData();
+  }, []);
+  
 
 
 
@@ -110,7 +181,7 @@ function App() {
     0: <Welcome name={name} setName={setName} handleCreateAccount={ handleCreateAccount }/>,
     1: <Dashboard history={history} name={name} attempts={attempts} PLAN={PLAN} day={day} handleChangePage={handleChangePage} daysWords={daysWords} datetime={datetime} />,
     2: <Challenge day={day} daysWords={daysWords} handleChangePage={handleChangePage} handleIncrementAttempts={handleIncrementAttempts} handleCompleteDay={handleCompleteDay} PLAN={PLAN} />,
-    3: <Reg/>
+    3: <Reg name={name} setName={setName} handleChangePage={handleChangePage}/>
   }
 
   return (

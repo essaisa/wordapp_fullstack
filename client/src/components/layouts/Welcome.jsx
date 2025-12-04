@@ -1,6 +1,6 @@
 export default function Welcome(props) {
 
-    const { name, setName, handleCreateAccount } = props
+    const { name, setName, handleCreateAccount, handleCreateName } = props
 
     return (
         <section id="welcome">
@@ -20,7 +20,7 @@ export default function Welcome(props) {
                     setName(evt.target.value)
                 }}  type="text" placeholder="Enter your name..." />
                 <br/>
-                <button disabled={!name} onClick={handleCreateAccount}>
+                <button disabled={!name} onClick={handleCreateName}>
                     <h6> Start &rarr; </h6>
                 </button>
             </div>

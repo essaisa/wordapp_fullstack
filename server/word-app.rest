@@ -3,6 +3,65 @@ POST http://localhost:5003/auth/register
 Content-Type: application/json
 
 {
-    "username": "essa@gmail.com",
-    "password": "123123123"
+    "username": "ykdis1",
+    "password": "12345678"
 }
+
+### COMPLETE A DAY
+POST http://localhost:5003/progress/day
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0ODA1MDYzLCJleHAiOjE3NjQ4OTE0NjN9.S6UgSUKMpx7KL_sV7MXgJEwVpLMA7JWFzCgXHQJ9JSA
+
+{
+    "day": 1,
+    "datetime": 1764797332975
+}
+
+### COMPLETE A DAY
+GET http://localhost:5003/progress/day
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0ODA1MDYzLCJleHAiOjE3NjQ4OTE0NjN9.S6UgSUKMpx7KL_sV7MXgJEwVpLMA7JWFzCgXHQJ9JSA
+
+
+### COMPLETE A DAY
+POST http://localhost:5003/progress/day
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0ODAzOTg1LCJleHAiOjE3NjQ4OTAzODV9.evWtb3PcucmjEasueESHkXl7CwWVPXn6r74slsUL0bA
+
+{
+    "day": 3,
+    "datetime": 1764797332975
+}
+
+### COMPLETE A DAY
+POST http://localhost:5003/attempts/rec
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc2NDc5NzY1OCwiZXhwIjoxNzY0ODg0MDU4fQ.GYzKQHY58EATQlI-uTW4sQFsYoc8revK3J26Apu-tf8
+
+{
+    "attempts": 12
+}
+
+
+### Add history
+POST http://localhost:5003/history/rec
+Content-Type: application/json
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0ODA1MDYzLCJleHAiOjE3NjQ4OTE0NjN9.S6UgSUKMpx7KL_sV7MXgJEwVpLMA7JWFzCgXHQJ9JSA
+
+{
+    "history": {
+        "Dec 03": 3,
+        "Dec 02": 1
+    }
+}
+
+### GET history
+GET http://localhost:5003/history/rec
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc2NDc5NzY1OCwiZXhwIjoxNzY0ODg0MDU4fQ.GYzKQHY58EATQlI-uTW4sQFsYoc8revK3J26Apu-tf8
+
+
+
+
+
+
+
