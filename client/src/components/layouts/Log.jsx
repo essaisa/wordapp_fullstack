@@ -1,20 +1,20 @@
 import React, { useState } from 'react'
 
-export default function Registration(props) {
+export default function Log(props) {
 
-    const { handleChangePage, name, setName } = props
+const { handleChangePage, name, setName } = props
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
 
     
-    const regCall = async (e) => {
+    const LogCall = async (e) => {
         e.preventDefault();
         console.log("regCall triggered");
       
         try {
-          const response = await fetch("http://localhost:5003/auth/register", {
+          const response = await fetch("http://localhost:5003/auth/login", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ username, password })
@@ -34,7 +34,6 @@ export default function Registration(props) {
             setName(username)
             console.log("Saved token:", data.token);
             handleChangePage(1)
-            console.log(Date.now())
           }
           
           
@@ -47,39 +46,37 @@ export default function Registration(props) {
 
   return (
     <div>
-        <section id='reg'>
+        <section id='log'>
             <div>
-                <div className='reg-text'>
-                   <p>Welcome to...</p>
+                <div className='log-text'>
+                   <text>Welcome to...</text>
                    <h1 className="text-large special-shadow">WORD KNOWLEDGE</h1> 
                 </div>
-                <form className='reg-login' onSubmit={regCall}>
-                    <label htmlFor="username">Username</label>
+                <form className='log-login' onSubmit={LogCall}>
+                    <label>Username</label>
                     {error && <p style={{color: "red"}}> {error} </p>}
                     <input 
-                    id="username"
                     type='text'
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     />
 
-                    <label htmlFor="password">Password</label>
+                    <label>Password</label>
                     <input 
-                    id="password"
                     type="text"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     />
 
-                    <button type='submit' className='sign-up-button'>
-                        <h6>Sign Up</h6>
+                    <button type='submit' className='login-button'>
+                        <h6>Login</h6>
                     </button> 
                 </form>
 
-                <div className='login-option'>
-                  <p>Already have an account?</p>
-                  <button className='login-sign-up' onClick={() => {handleChangePage(4)}}>
-                        <h6>Login</h6>
+                <div className='sign-up-option'>
+                  <p>Don't have an account?</p>
+                  <button className='sign-up-login' onClick={() => {handleChangePage(3)}}>
+                        <h6>Sign Up</h6>
                     </button> 
                 </div>
 
@@ -87,6 +84,13 @@ export default function Registration(props) {
 
             </div>
         </section>
+      
     </div>
   )
+
+    
+      
+      
+    
+  
 }

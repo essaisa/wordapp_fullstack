@@ -7,10 +7,19 @@ Content-Type: application/json
     "password": "12345678"
 }
 
+### LOGIN A USER
+POST http://localhost:5003/auth/login
+Content-Type: application/json
+
+{
+    "username": "ykdis1",
+    "password": "12345678"
+}
+
 ### COMPLETE A DAY
 POST http://localhost:5003/progress/day
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0ODA1MDYzLCJleHAiOjE3NjQ4OTE0NjN9.S6UgSUKMpx7KL_sV7MXgJEwVpLMA7JWFzCgXHQJ9JSA
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY1NDA5MTIwLCJleHAiOjE3NjU0OTU1MjB9.KjkwJQWi-2dNT7W9_I1Jv_bK3nx39dE4c2kbmmrqCsA
 
 {
     "day": 1,
@@ -59,7 +68,14 @@ Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY0ODA1
 GET http://localhost:5003/history/rec
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksImlhdCI6MTc2NDc5NzY1OCwiZXhwIjoxNzY0ODg0MDU4fQ.GYzKQHY58EATQlI-uTW4sQFsYoc8revK3J26Apu-tf8
 
+### GET leaderboard
+GET http://localhost:5003/leaderboard
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzY1NDA2NDQxLCJleHAiOjE3NjU0OTI4NDF9.cvtRTm1zre_M4BRV9fOJpt0lMzkT6XcLNri6pDGnb7s
 
+
+### GET leaderboard
+GET http://localhost:5003/attempts/rec
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NiwiaWF0IjoxNzY1OTMzOTY3LCJleHAiOjE3NjYwMjAzNjd9.tYaWLNxGq5-4_KxCE38DfFbgwBdAaiVm7toGznRX6lo
 
 
 

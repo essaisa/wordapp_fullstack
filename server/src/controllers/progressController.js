@@ -1,13 +1,17 @@
+// IMPORTS
 import express from 'express'
 import prisma from '../prismaClient.js'
+import { createRecord } from "../factories/recordFactory.js"
 
 const router = express.Router()
 
+// POST PROGRESS 
 router.post('/day', async (req, res) => {
-    console.log(req.userId)
     const { day, datetime } =  req.body
+    // EXCEPTION HANDLING
     try {
-        const progress = await prisma.progress.create({
+      // FACTORY
+        const progress = await createRecord("progress", {
             data:{
                 userId: req.userId,
                 day: day,
@@ -26,7 +30,9 @@ router.post('/day', async (req, res) => {
     }
 })
 
+// GET PROGRESS
 router.get('/day', async (req, res) => {
+  // EXCEPTION HANDLING
     try {
       const progress = await prisma.progress.findFirst({
         where: { userId: req.userId },
@@ -34,11 +40,11 @@ router.get('/day', async (req, res) => {
         select: { day: true, datetime: true }
       });
   
+      // EDGE CASE
       if (!progress) {
         return res.json({ day: 1, datetime: null });
       }
   
-      // convert BigInt to string for safe JSON serialization
       res.json({
         day: progress.day,
         datetime: progress.datetime.toString()

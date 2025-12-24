@@ -4,10 +4,16 @@ import Welcome from "./components/layouts/Welcome"
 import Challenge from "./components/layouts/Challenge"
 import { useState, useEffect } from "react"
 import Reg from "./components/layouts/Reg"
+import Log from "./components/layouts/Log"
+import Leaderboard from "./components/layouts/Leaderboard"
+import EditAccount from "./components/layouts/EditAccount"
+
 
 import WORDS from './utils/VOCAB.json'
 
 import { countdownIn24Hours, getWordByIndex, PLAN } from './utils'
+
+
 
 function App() {
 
@@ -23,6 +29,12 @@ function App() {
 
   function handleChangePage(pageIndex){
     setSelectedPage(pageIndex)
+  }
+
+  function handleLogOut(){
+    localStorage.removeItem('token')
+    localStorage.removeItem('username');
+    localStorage.removeItem('attempts')
   }
 
   function handleCreateAccount() {
@@ -79,7 +91,7 @@ function App() {
   
     const fetchData = async () => {
       try {
-        // 1. Get username
+
         const userRes = await fetch("http://localhost:5003/personal/name", {
           headers: { "Authorization": token },
         });
@@ -89,7 +101,7 @@ function App() {
           setSelectedPage(1);
         }
   
-        // 2. Get attempts
+
         let attemptsRes = await fetch("http://localhost:5003/attempts/rec", {
           headers: { "Authorization": token },
         });
@@ -104,7 +116,7 @@ function App() {
         
         
   
-        // 4. Get progress (day/datetime)
+
         let progressRes = await fetch("http://localhost:5003/progress/day", {
           headers: { "Authorization": token },
         });
@@ -119,8 +131,6 @@ function App() {
         
 
         
-  
-        // 5. Countdown logic
         if (progressData.day > 1 && progressData.datetime) {
           const diff = countdownIn24Hours(Number(progressData.datetime) * -1 );
           if (diff < 0) {
@@ -136,7 +146,6 @@ function App() {
             setDatetime(null);
             setAttempts(0);
   
-            // update backend
             await fetch("http://localhost:5003/progress/day", {
               method: "POST",
               headers: {
@@ -179,9 +188,13 @@ function App() {
   
   const pages = { 
     0: <Welcome name={name} setName={setName} handleCreateAccount={ handleCreateAccount }/>,
-    1: <Dashboard history={history} name={name} attempts={attempts} PLAN={PLAN} day={day} handleChangePage={handleChangePage} daysWords={daysWords} datetime={datetime} />,
+    1: <Dashboard history={history} name={name} attempts={attempts} PLAN={PLAN} day={day} handleChangePage={handleChangePage} daysWords={daysWords} datetime={datetime}  handleLogOut={handleLogOut} />,
     2: <Challenge day={day} daysWords={daysWords} handleChangePage={handleChangePage} handleIncrementAttempts={handleIncrementAttempts} handleCompleteDay={handleCompleteDay} PLAN={PLAN} />,
-    3: <Reg name={name} setName={setName} handleChangePage={handleChangePage}/>
+    3: <Reg name={name} setName={setName} handleChangePage={handleChangePage} />,
+    4: <Log name={name} setName={setName} handleChangePage={handleChangePage}/>,
+    5: <Leaderboard handleChangePage={handleChangePage} />,
+    6: <EditAccount handleChangePage={handleChangePage}/>
+    
   }
 
   return (

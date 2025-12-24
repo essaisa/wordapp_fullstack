@@ -52,10 +52,57 @@ section {
     max-width: 100%;
 }
 
-#reg button {
+.sign-up-button {
     display: grid;
     place-items: center;
     padding: 1rem 2rem;
+}
+
+.login-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 15rem;
+    gap: 3rem;
+}
+
+/* LOG */
+#log {
+    flex: 1;
+    justify-content: center;
+    gap: 1.5rem;
+    padding-top: 6rem;
+}
+
+.log-text{
+    gap: 1.5rem;
+    padding: 3rem 4rem;
+}
+
+.log-login{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+}
+
+#log input {
+    font-size: 1rem;
+    max-width: 100%;
+}
+
+.login-button {
+    display: grid;
+    place-items: center;
+    padding: 1rem 2rem;
+}
+
+.sign-up-option {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 15rem;
+    gap: 3rem;
 }
 
 
@@ -89,6 +136,10 @@ section {
 }
 
 /* DASHBOARD */
+.dashboard-and-logout{
+    display: flex;
+    gap: 1rem;
+}
 .stats-card{
     display: flex;
     flex-direction: column;
@@ -254,11 +305,27 @@ section {
 }
 
 
+/* LEADERBOARD  */
+.leaderboard-table{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+.leaderboard-table table {
+  border-collapse: collapse;
+}
 
+.leaderboard-table th,
+.leaderboard-table td {
+  padding: 0.75rem 1.2rem;
+  text-align: center;
+}
 
+.leaderboard-table th {
+  font-weight: 600;
+}
 
-/* PORTAL  */
 
 /* FOOTER  */
 footer{

@@ -1,21 +1,23 @@
+//IMPORTS
 import express from 'express'
 import prisma from '../prismaClient.js'
+import { createRecord } from "../factories/recordFactory.js"
 
 const router = express.Router()
 
+// HISTORY POST ROUTE
 router.post('/rec', async (req, res) => {
     
-    const { attempts } =  req.body
+    const { historyRec } =  req.body
     
     try {
-        const attemptsRec = await prisma.attempts.create({
+        const historyEntry = await createRecord("history", {
             data:{
                 userId: req.userId,
-                attemptNo: attempts,
+                historyRec: historyRec 
             }
         })
-        res.json(attemptsRec)
-        
+        res.json(historyEntry)
 
     } catch (err) {
         console.log(err.message)
@@ -23,14 +25,16 @@ router.post('/rec', async (req, res) => {
     }
 })
 
+// HISTORY GET ROUTE
 router.get('/rec', async (req, res) => {
     try {
-        const attemptsRec = await prisma.attempts.findFirst({
+        const historyRes = await prisma.history.findFirst({
           where: { userId: req.userId },
           orderBy: { id: 'desc' },
-          select: { attemptNo: true }
+          select: { historyRec: true }
         })
-        res.json(attemptsRec)
+        
+        return historyRes ? res.json(historyRes) : res.json({message: "No history yet"})
 
       } catch (err) {
         console.error(err)
